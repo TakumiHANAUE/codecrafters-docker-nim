@@ -8,9 +8,9 @@ from osproc import execProcess
 echo "Logs from your program will appear here"
 
 # Uncomment this block to pass the first stage
-#
-# let command = commandLineParams()[2]
-# let args = commandLineParams()[3..^1]
-#
-# let output = execProcess(command, "", args, options={})
-# echo output
+
+let command = commandLineParams()[2]
+let args = commandLineParams()[3..^1]
+
+let output = execProcess(command, "", args, options={})
+echo output
