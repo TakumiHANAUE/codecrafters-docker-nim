@@ -10,4 +10,6 @@ from strutils import join
 let args = commandLineParams()[2..^1]
 
 # Standard input, output, error streams are inherited from the calling process.
-discard execCmd(args.join(" "))
+let errorCode = execCmd(args.join(" "))
+
+quit(errorCode)
