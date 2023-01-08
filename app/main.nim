@@ -1,16 +1,13 @@
 # Usage: your_docker.sh run <image> <command> <arg1> <arg2> ...
 
 from os import commandLineParams
-from osproc import execProcess
+from osproc import execCmd
+from strutils import join
 
 
-# You can use print statements as follows for debugging, they'll be visible when running tests.
-echo "Logs from your program will appear here"
+# args[0] : command
+# args[1..] : command's Nth arg
+let args = commandLineParams()[2..^1]
 
-# Uncomment this block to pass the first stage
-
-let command = commandLineParams()[2]
-let args = commandLineParams()[3..^1]
-
-let output = execProcess(command, "", args, options={})
-echo output
+# Standard input, output, error streams are inherited from the calling process.
+discard execCmd(args.join(" "))
