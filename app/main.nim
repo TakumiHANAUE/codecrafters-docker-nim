@@ -1,15 +1,37 @@
 # Usage: your_docker.sh run <image> <command> <arg1> <arg2> ...
 
-from os import commandLineParams
-from osproc import execCmd
-from strutils import join
+import os
+import osproc
 
+proc chroot*(path: cstring): cint {.importc, header: "<unistd.h>".}
 
 # args[0] : command
 # args[1..] : command's Nth arg
-let args = commandLineParams()[2..^1]
+let params = commandLineParams()[2..^1]
+let command = params[0]
+let commandArgs = params[1..^1]
 
-# Standard input, output, error streams are inherited from the calling process.
-let errorCode = execCmd(args.join(" "))
+# Create empty temp directory
+let tmpDir = "./tmp_" & $getCurrentProcessId()
+createDir(tmpDir)
+
+# Copy the binary being executed to temp directory
+let srcFile = params[0]
+let dstFile = joinPath(tmpDir, srcFile)
+## Create directory for executed binary
+createDir(parentDir(dstFile))
+## Copy executed binary
+copyFileWithPermissions(srcFile, dstFile)
+
+# Change current directory to temp directory
+setCurrentDir(tmpDir)
+
+# chroot to temp directory
+discard chroot(cstring("."))
+
+# Execute Command in a child prosess
+let p = startProcess(command, args=commandArgs, options={poParentStreams})
+let errorCode = p.waitForExit()
+close(p)
 
 quit(errorCode)
