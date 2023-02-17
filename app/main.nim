@@ -4,6 +4,8 @@ import os
 import osproc
 
 proc chroot*(path: cstring): cint {.importc, header: "<unistd.h>".}
+proc unshare*(flags: cint): cint {.importc, header: "<sched.h>".}
+const CLONE_NEWPID = 0x20000000'i32
 
 # args[0] : command
 # args[1..] : command's Nth arg
@@ -28,6 +30,9 @@ setCurrentDir(tmpDir)
 
 # chroot to temp directory
 discard chroot(cstring("."))
+
+# unshare to create new pid namespace
+discard unshare(CLONE_NEWPID)
 
 # Execute Command in a child prosess
 let p = startProcess(command, args=commandArgs, options={poParentStreams})
