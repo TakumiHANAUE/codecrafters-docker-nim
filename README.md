@@ -47,3 +47,44 @@ You can now execute your program like this:
 ```sh
 mydocker run ubuntu:latest /usr/local/bin/docker-explorer echo hey
 ```
+
+# Note
+
+## 環境
+
+`.devcontainer/devcontainer.json`参照
+
+## 動作確認方法
+
+- 実行後コンテナを消したいなら docker run オプションに `--rm` を追加
+- STDOUT, STDERR を確認したいなら以下のいずれかの方法をとる。
+  - Docker Desktop の ログを見る
+  - VS Code の Docker 拡張から、コンテナを右クリックして View Logs
+  - `$ docker logs mydocker_cont`
+
+実行、エラーコード／標準出力を出力、コンテナ削除 を行う一連のコマンドは以下の通り。
+
+```bash
+$ docker build -t mydocker . && docker run --name mydocker_cont --cap-add="SYS_ADMIN" mydocker run [IMAGE] [COMMAND] [ARGS]...
+$ echo "[Exit code] $?"
+$ echo "[Logs]"
+$ docker logs mydocker_cont
+$ docker rm mydocker_cont
+```
+
+`exec_program.sh` としてスクリプト化した
+
+## codecrafters test のローカル実施
+
+### [CodeCrafters CLI をインストール](https://docs.codecrafters.io/cli/installation?_gl=1*atj0zz*_ga*MTk2NjkxNjg1LjE2NzMwMDEwNzk.*_ga_N8D6K4M2HE*MTY3NDk0NjA2Ni4yMS4wLjE2NzQ5NDYwNjYuMC4wLjA.)
+
+```bash
+$ curl https://codecrafters.io/install.sh | sh
+```
+
+### 実行方法
+
+```bash
+$ codecrafters test
+```
+
